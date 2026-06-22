@@ -157,10 +157,29 @@ body{font-family:'Noto Sans KR',sans-serif;background:#0d1b2a;color:#e2e8f0;min-
 .ref-table tr:last-child td{border-bottom:none}
 .ref-table .modal-cell{font-weight:800;color:#fff;font-size:14px}
 
+/* ── Word Order (순배열) ── */
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:44px;padding:10px;background:var(--bg3);border-radius:12px;border:2px dashed var(--bg4)}
+.word-token{background:var(--bg4);border:2px solid var(--bg4);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;color:#dde8f2;cursor:pointer;transition:all .15s;user-select:none;line-height:1.3}
+.word-token:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.word-token.used{opacity:.3;pointer-events:none;cursor:default;transform:none}
+.word-token.disabled-tok{pointer-events:none}
+.answer-slots{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:52px;padding:10px 12px;background:var(--bg2);border-radius:12px;border:2px solid var(--bg3);align-content:flex-start}
+.answer-slots.has-words{border-color:var(--gold-dim)}
+.placed-token{background:var(--gold-dim);border:2px solid var(--gold);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--gold);cursor:pointer;transition:all .15s;line-height:1.3}
+.placed-token:hover{background:rgba(212,168,67,.25)}
+.placed-token.disabled-tok{pointer-events:none}
+.slot-label{font-size:11px;font-weight:700;color:#7f9ab5;margin-bottom:6px;width:100%}
+.order-actions{display:flex;gap:8px;margin-bottom:10px}
+.order-reset{background:none;border:1px solid var(--bg4);border-radius:8px;color:#7f9ab5;font-size:12px;padding:6px 14px;cursor:pointer;transition:all .15s}
+.order-reset:hover{border-color:var(--red);color:var(--red)}
+.word-token.correct-tok{border-color:var(--green)!important;background:rgba(74,222,128,.1)!important;color:var(--green)!important}
+.word-token.wrong-tok{border-color:var(--red)!important;background:rgba(248,113,113,.08)!important;color:var(--red)!important}
+
 @media(max-width:400px){
   .app-header h1{font-size:22px}
   .ox-btn{width:110px;height:90px;font-size:40px}
   .result-hero .big{font-size:56px}
+  .word-token,.placed-token{font-size:13px;padding:7px 11px}
 }
 </style>
 </head>
@@ -175,7 +194,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#0d1b2a;color:#e2e8f0;min-
   <div class="app-header">
     <div class="logo">중학영문법 3800제 · 1학년 · 3장</div>
     <h1><em>조동사</em> 완전정복 퀴즈</h1>
-    <p>뜻 암기부터 문장 전환까지 — 5가지 모드 완전 학습</p>
+    <p>뜻 암기부터 문장 전환까지 — 6가지 전환 모드 완전 학습</p>
   </div>
 
   <div class="stats-strip">
@@ -216,6 +235,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:#0d1b2a;color:#e2e8f0;min-
       <div class="mode-card" onclick="startMode('convert_fill')">
         <div class="mc-icon" style="background:rgba(251,191,36,.1)">✏️</div>
         <div><h3>문장 전환 — 빈칸 채우기</h3><p>같은 뜻으로 쓰이는 어구를 직접 입력하기</p><span class="badge" style="background:rgba(251,191,36,.1);color:var(--amber)">단답형 입력</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('convert_order')">
+        <div class="mc-icon" style="background:rgba(45,212,191,.12)">🔡</div>
+        <div><h3>문장 전환 — 순서 배열</h3><p>단어 카드를 탭하여 올바른 전환 문장 순서로 배열</p><span class="badge" style="background:rgba(45,212,191,.12);color:var(--teal)">어순 배열</span></div>
       </div>
       <div class="mode-card" onclick="startMode('convert_write')">
         <div class="mc-icon" style="background:rgba(244,114,182,.1)">📝</div>
@@ -730,6 +753,134 @@ function genConvertWrite(){
   return {...q};
 }
 
+// ─── 문장 전환 — 순서 배열 ─────────────────────────────
+// 각 문제: 섞인 단어 토큰을 탭해 올바른 전환 문장 완성
+const CONV_ORDER_DATA = [
+  // can ↔ be able to
+  {tag:'🔡 어순배열: can',modals:['can'],
+   stem:"다음 문장을 be able to로 전환하세요.",
+   eng:"I can drive a car.",kor:"나는 차를 운전할 수 있다.",
+   answer:"I am able to drive a car.",
+   tokens:["I","am","able","to","drive","a","car."],
+   explain:"I → <strong>am able to</strong> drive a car."},
+  {tag:'🔡 어순배열: can',modals:['can'],
+   stem:"부정문을 be able to로 전환하세요.",
+   eng:"She can't drive a car.",kor:"그녀는 차를 운전할 수 없다.",
+   answer:"She isn't able to drive a car.",
+   tokens:["She","isn't","able","to","drive","a","car."],
+   explain:"She → <strong>isn't able to</strong> drive a car."},
+  {tag:'🔡 어순배열: can',modals:['can'],
+   stem:"의문문을 be able to로 전환하세요.",
+   eng:"Can you drive a car?",kor:"너는 차를 운전할 수 있니?",
+   answer:"Are you able to drive a car?",
+   tokens:["Are","you","able","to","drive","a","car?"],
+   explain:"<strong>Are you able to</strong> drive a car?"},
+  // could ↔ be able to (past)
+  {tag:'🔡 어순배열: could',modals:['could'],
+   stem:"과거문을 was able to로 전환하세요.",
+   eng:"He could get a new bike on Christmas Day.",kor:"그는 크리스마스에 새 자전거를 받을 수 있었다.",
+   answer:"He was able to get a new bike on Christmas Day.",
+   tokens:["He","was","able","to","get","a","new","bike","on","Christmas","Day."],
+   explain:"He + 과거 → <strong>was able to</strong>"},
+  {tag:'🔡 어순배열: could',modals:['could'],
+   stem:"과거 부정문을 wasn't able to로 전환하세요.",
+   eng:"Mark couldn't drive a car.",kor:"Mark는 차를 운전할 수 없었다.",
+   answer:"Mark wasn't able to drive a car.",
+   tokens:["Mark","wasn't","able","to","drive","a","car."],
+   explain:"couldn't → <strong>wasn't able to</strong>"},
+  // will ↔ be going to
+  {tag:'🔡 어순배열: will',modals:['will'],
+   stem:"will을 be going to로 전환하세요.",
+   eng:"It will snow this afternoon.",kor:"오늘 오후에 눈이 올 것이다.",
+   answer:"It is going to snow this afternoon.",
+   tokens:["It","is","going","to","snow","this","afternoon."],
+   explain:"It → <strong>is going to</strong>"},
+  {tag:'🔡 어순배열: will',modals:['will'],
+   stem:"will을 be going to로 전환하세요.",
+   eng:"They will go to the museum.",kor:"그들은 박물관에 갈 것이다.",
+   answer:"They are going to go to the museum.",
+   tokens:["They","are","going","to","go","to","the","museum."],
+   explain:"They → <strong>are going to</strong>"},
+  {tag:'🔡 어순배열: will',modals:['will'],
+   stem:"will을 be going to로 전환하세요.",
+   eng:"It will rain next Sunday.",kor:"다음 주 일요일에는 비가 올 것이다.",
+   answer:"It is going to rain next Sunday.",
+   tokens:["It","is","going","to","rain","next","Sunday."],
+   explain:"It → <strong>is going to</strong> rain next Sunday."},
+  // must ↔ have to
+  {tag:'🔡 어순배열: must',modals:['must','have_to'],
+   stem:"must를 have to로 전환하세요.",
+   eng:"We must go to Seoul now.",kor:"우리는 지금 서울에 가야 한다.",
+   answer:"We have to go to Seoul now.",
+   tokens:["We","have","to","go","to","Seoul","now."],
+   explain:"We → <strong>have to</strong>"},
+  {tag:'🔡 어순배열: must',modals:['must','have_to'],
+   stem:"3인칭 단수: must를 has to로 전환하세요.",
+   eng:"She must go to Seoul now.",kor:"그녀는 지금 서울에 가야 한다.",
+   answer:"She has to go to Seoul now.",
+   tokens:["She","has","to","go","to","Seoul","now."],
+   explain:"She(3인칭 단수) → <strong>has to</strong>"},
+  {tag:'🔡 어순배열: must',modals:['had_to'],
+   stem:"과거 의무 문장을 완성하세요.",
+   eng:"must의 과거형 → had to 사용",kor:"우리는 어제 서울에 가야 했다.",
+   answer:"We had to go to Seoul yesterday.",
+   tokens:["We","had","to","go","to","Seoul","yesterday."],
+   explain:"must 과거형 없음 → <strong>had to</strong>"},
+  // would like ↔ want
+  {tag:'🔡 어순배열: would like',modals:['would_like'],
+   stem:"Would you like → Do you want으로 전환하세요.",
+   eng:"Would you like some ice cream?",kor:"너는 아이스크림을 좀 원하니?",
+   answer:"Do you want some ice cream?",
+   tokens:["Do","you","want","some","ice","cream?"],
+   explain:"<strong>Do you want</strong> some ice cream?"},
+  {tag:'🔡 어순배열: would like',modals:['would_like'],
+   stem:"I'd like to → I want to로 전환하세요.",
+   eng:"I'd like to go to sleep.",kor:"나는 잠자러 가고 싶다.",
+   answer:"I want to go to sleep.",
+   tokens:["I","want","to","go","to","sleep."],
+   explain:"I'd like to → <strong>I want to</strong>"},
+  // should ↔ ought to
+  {tag:'🔡 어순배열: should',modals:['should'],
+   stem:"should를 ought to로 전환하세요.",
+   eng:"I should call her tonight.",kor:"나는 오늘 밤에 그녀에게 전화해야 한다.",
+   answer:"I ought to call her tonight.",
+   tokens:["I","ought","to","call","her","tonight."],
+   explain:"<strong>ought to</strong> = should"},
+  {tag:'🔡 어순배열: should',modals:['should'],
+   stem:"should를 ought to로 전환하세요.",
+   eng:"You should come home by 8 o'clock.",kor:"너는 집에 8시까지 와야 한다.",
+   answer:"You ought to come home by 8 o'clock.",
+   tokens:["You","ought","to","come","home","by","8","o'clock."],
+   explain:"<strong>ought to</strong> = should"},
+];
+
+// 오답 유인 토큰을 추가해 난이도를 높이는 함수
+const DISTRACTOR_POOLS = {
+  can:    ["is","are","can","was","were","not"],
+  could:  ["is","are","can","were","not"],
+  will:   ["was","were","will","am","is","not"],
+  must:   ["have","has","had","must","to","not"],
+  would_like:["Would","Does","do","want","wants","like"],
+  should: ["should","oughts","must","have","to"],
+};
+
+function genConvertOrder(){
+  const q=pick(CONV_ORDER_DATA);
+  // Add 2–3 distractor tokens from pool
+  const poolKey = q.modals[0]==='had_to'?'must': q.modals[0]==='have_to'?'must':q.modals[0];
+  const pool = DISTRACTOR_POOLS[poolKey] || ["not","to","be","is","are","was"];
+  const extra = shuffle(pool.filter(w=>!q.tokens.includes(w))).slice(0,2);
+  const allTokens = shuffle([...q.tokens, ...extra]);
+  return {
+    type:'order', tag: q.tag, modals: q.modals,
+    stem: q.stem, eng: q.eng, kor: q.kor,
+    answer: q.answer,
+    tokens: allTokens,   // shuffled pool including distractors
+    correctTokens: q.tokens, // correct sequence
+    explain: q.explain,
+  };
+}
+
 // ═══════════════════════════════════════════════════════
 //  GAME STATE
 // ═══════════════════════════════════════════════════════
@@ -746,14 +897,15 @@ const MODE_NAMES={
   meaning:'📖 뜻 맞추기',modal_pick:'🎯 조동사 고르기',
   negative_focus:'🚫 부정형 집중',ox_quiz:'⭕ O/X 퀴즈',
   convert_mc:'🔀 전환 객관식',convert_fill:'✏️ 전환 빈칸',
-  convert_write:'📝 영작 도전',random_all:'🎲 랜덤 종합'
+  convert_order:'🔡 어순 배열',convert_write:'📝 영작 도전',
+  random_all:'🎲 랜덤 종합'
 };
 
 const GENS={
   meaning:genMeaning, modal_pick:genModalPick,
   negative_focus:genNegativeFocus, ox_quiz:genOX,
   convert_mc:genConvertMC, convert_fill:genConvertFill,
-  convert_write:genConvertWrite
+  convert_order:genConvertOrder, convert_write:genConvertWrite
 };
 
 function startMode(m){
@@ -761,7 +913,7 @@ function startMode(m){
   qs=[];
   const count=m==='random_all'?20:12;
   if(m==='random_all'){
-    const types=['meaning','modal_pick','negative_focus','ox_quiz','convert_mc','convert_fill','convert_write'];
+    const types=['meaning','modal_pick','negative_focus','ox_quiz','convert_mc','convert_fill','convert_order','convert_write'];
     for(let i=0;i<count;i++) qs.push(GENS[pick(types)]());
   } else {
     for(let i=0;i<count;i++) qs.push(GENS[m]());
@@ -821,6 +973,36 @@ function renderQ(){
     });
     ch.appendChild(div);
 
+  } else if(q.type==='order'){
+    // State for this question
+    window._orderPlaced = [];
+    window._orderTokens = [...q.tokens]; // includes distractors, shuffled
+
+    const slotDiv = document.createElement('div');
+    slotDiv.className='answer-slots';slotDiv.id='slot-area';
+    slotDiv.innerHTML='<div class="slot-label">여기에 단어를 순서대로 놓으세요 ↓</div>';
+
+    const bankDiv = document.createElement('div');
+    bankDiv.className='word-bank';bankDiv.id='bank-area';
+
+    window._orderTokens.forEach((tok,idx)=>{
+      const btn=document.createElement('button');
+      btn.className='word-token';
+      btn.textContent=tok;
+      btn.dataset.idx=idx;
+      btn.onclick=()=>placeToken(btn,tok,idx,q);
+      bankDiv.appendChild(btn);
+    });
+
+    const actRow=document.createElement('div');
+    actRow.className='order-actions';
+    actRow.innerHTML=`<button class="order-reset" onclick="resetOrder(${JSON.stringify(q).replace(/"/g,'&quot;')})">↺ 초기화</button>`;
+
+    ch.appendChild(slotDiv);
+    ch.appendChild(bankDiv);
+    ch.appendChild(actRow);
+    ch.innerHTML+=`<button class="check-btn" onclick="checkOrder(qs[qi])">순서 확인하기</button>`;
+
   } else if(q.type==='ox'){
     ch.innerHTML=`<div class="ox-row">
       <button class="ox-btn ob" onclick="answerOX(this,true,'${encodeQ(q.explain)}','${encodeQ(q.modals.join(','))}')">O</button>
@@ -840,6 +1022,74 @@ function renderQ(){
 
 function encodeQ(s){return encodeURIComponent(s||'')}
 function decodeQ(s){return decodeURIComponent(s||'')}
+
+// ── Word Order functions ──
+function placeToken(btn, tok, idx, q){
+  if(answered)return;
+  btn.classList.add('used');
+  window._orderPlaced.push({tok, idx});
+  const slot=document.getElementById('slot-area');
+  const pt=document.createElement('button');
+  pt.className='placed-token';
+  pt.textContent=tok;
+  pt.dataset.placedIdx=window._orderPlaced.length-1;
+  pt.onclick=()=>removeToken(pt, idx);
+  slot.appendChild(pt);
+  document.getElementById('slot-area').classList.add('has-words');
+}
+
+function removeToken(pt, bankIdx){
+  if(answered)return;
+  const pi=parseInt(pt.dataset.placedIdx);
+  window._orderPlaced.splice(pi,1);
+  // re-index remaining placed tokens
+  document.querySelectorAll('.placed-token').forEach((p,i)=>p.dataset.placedIdx=i);
+  pt.remove();
+  // restore bank token
+  document.querySelectorAll('.word-token').forEach(b=>{
+    if(parseInt(b.dataset.idx)===bankIdx) b.classList.remove('used');
+  });
+  if(window._orderPlaced.length===0) document.getElementById('slot-area').classList.remove('has-words');
+}
+
+function resetOrder(q){
+  window._orderPlaced=[];
+  document.getElementById('slot-area').innerHTML='<div class="slot-label">여기에 단어를 순서대로 놓으세요 ↓</div>';
+  document.getElementById('slot-area').classList.remove('has-words');
+  document.querySelectorAll('.word-token').forEach(b=>b.classList.remove('used'));
+}
+
+function checkOrder(q){
+  if(answered)return;
+  if(window._orderPlaced.length===0){alert('단어를 먼저 배치해주세요!');return;}
+  answered=true;
+
+  const userSentence=window._orderPlaced.map(p=>p.tok).join(' ');
+  const normalize=s=>s.toLowerCase().replace(/['\u2019\u2018]/g,"'").replace(/\s+/g,' ').trim();
+  const ok=normalize(userSentence)===normalize(q.answer);
+
+  // Freeze tokens
+  document.querySelectorAll('.placed-token,.word-token').forEach(b=>b.classList.add('disabled-tok'));
+  document.querySelectorAll('.order-reset,.check-btn').forEach(b=>b.style.display='none');
+
+  // Show correct answer in slot if wrong
+  if(!ok){
+    const slot=document.getElementById('slot-area');
+    const correctRow=document.createElement('div');
+    correctRow.style.cssText='width:100%;margin-top:8px;font-size:12px;color:var(--red);font-weight:700';
+    correctRow.innerHTML=`내 답: <span style="color:#dde8f2">${userSentence}</span>`;
+    const correctRow2=document.createElement('div');
+    correctRow2.style.cssText='font-size:12px;color:var(--green);font-weight:700;margin-top:4px';
+    correctRow2.innerHTML=`정답: <span style="color:#dde8f2">${q.answer}</span>`;
+    slot.appendChild(correctRow);
+    slot.appendChild(correctRow2);
+  }
+
+  updateMastery(q.modals,ok);
+  if(ok){correct++;streak++;maxStreak=Math.max(streak,maxStreak);}else{wrong++;streak=0;}
+  log.push({ok,qtext:q.eng||q.kor,answer:q.answer,explain:q.explain});
+  showFB(ok,q.explain);
+}
 
 // ── MC answer ──
 function answerMC(btn, val, q){
