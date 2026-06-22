@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조동사 완전정복 퀴즈 – 중학영문법 3800제</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:#0d1b2a;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+:root{
+  --bg:#0d1b2a;--bg2:#132237;--bg3:#1a2f47;--bg4:#1f3a59;
+  --gold:#d4a843;--gold2:#e8c56a;--gold-dim:rgba(212,168,67,.15);
+  --blue:#60a5fa;--purple:#a78bfa;--cyan:#34d399;
+  --red:#f87171;--amber:#fbbf24;--pink:#f472b6;
+  --green:#4ade80;--teal:#2dd4bf;
+  --radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4);
+}
+
+/* ── Layout ── */
+.app{max-width:640px;margin:0 auto;padding:16px 14px 60px}
+
+/* ── Header ── */
+.app-header{text-align:center;padding:30px 0 24px;position:relative}
+.app-header .logo{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.app-header h1{font-size:27px;font-weight:900;line-height:1.3;color:#fff}
+.app-header h1 em{font-style:normal;color:var(--gold)}
+.app-header p{font-size:13px;color:#7f9ab5;margin-top:6px}
+
+/* ── Stats strip ── */
+.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.stat-box{background:var(--bg2);border:1px solid var(--bg4);border-radius:12px;padding:10px;text-align:center}
+.stat-box .n{font-size:24px;font-weight:900;color:var(--gold)}
+.stat-box .l{font-size:10px;color:#7f9ab5;margin-top:2px}
+
+/* ── Mode selection ── */
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+
+.mode-group{margin-bottom:28px}
+.mode-group-title{font-size:13px;font-weight:700;color:#7f9ab5;margin-bottom:8px;padding-left:4px}
+.mode-grid{display:flex;flex-direction:column;gap:8px}
+.mode-card{background:var(--bg2);border:2px solid var(--bg3);border-radius:var(--radius);padding:16px 18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.mode-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow)}
+.mode-card .mc-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mode-card h3{font-size:14px;font-weight:800;color:#fff;margin-bottom:2px}
+.mode-card p{font-size:12px;color:#7f9ab5;line-height:1.4}
+.mode-card .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
+
+/* ── Screen ── */
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Quiz header ── */
+.back-btn{background:none;border:none;color:#7f9ab5;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:all .15s;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600}
+.back-btn:hover{color:#fff;background:var(--bg3)}
+
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-counter{font-size:13px;color:#7f9ab5}<br>
+.q-counter strong{color:var(--gold)}
+.q-type-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;background:var(--gold-dim);color:var(--gold)}
+
+.progress-wrap{height:5px;background:var(--bg3);border-radius:3px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:3px;transition:width .4s ease}
+
+/* ── Question card ── */
+.q-card{background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--radius);padding:22px 20px;margin-bottom:14px}
+.q-card .q-label{font-size:11px;font-weight:700;color:#7f9ab5;margin-bottom:8px;letter-spacing:.5px}
+.q-card .q-stem{font-size:16px;font-weight:700;color:#fff;line-height:1.7}
+.q-card .q-eng{font-size:18px;font-weight:800;color:var(--gold2);margin:8px 0 4px;line-height:1.6;font-family:'Noto Serif KR',serif}
+.q-card .q-kor{font-size:14px;color:#94aec4;line-height:1.6}
+.q-card .q-blank{display:inline-block;border-bottom:3px solid var(--gold);min-width:110px;color:var(--gold);font-weight:800;text-align:center}
+
+/* ── Choices ── */
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.ch-btn{background:var(--bg3);border:2px solid transparent;border-radius:12px;padding:13px 16px;font-size:14px;font-weight:600;color:#dde8f2;cursor:pointer;transition:all .15s;text-align:left;line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.ch-btn .mk{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.ch-btn:hover:not(.disabled){border-color:var(--gold);background:rgba(212,168,67,.08)}
+.ch-btn.correct{border-color:var(--green)!important;background:rgba(74,222,128,.1)!important;color:var(--green)!important}
+.ch-btn.wrong{border-color:var(--red)!important;background:rgba(248,113,113,.08)!important;color:var(--red)!important}
+.ch-btn.reveal{border-color:var(--green)!important;background:rgba(74,222,128,.06)!important}
+.ch-btn.disabled{pointer-events:none}
+
+/* ── OX ── */
+.ox-row{display:flex;gap:14px;justify-content:center;margin-bottom:12px}
+.ox-btn{width:130px;height:110px;border-radius:18px;border:3px solid var(--bg4);background:var(--bg2);font-size:50px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-weight:900}
+.ox-btn.ob{color:var(--blue)}.ox-btn.xb{color:var(--red)}
+.ox-btn.ob:hover{border-color:var(--blue);background:rgba(96,165,250,.08);transform:scale(1.04)}
+.ox-btn.xb:hover{border-color:var(--red);background:rgba(248,113,113,.08);transform:scale(1.04)}
+.ox-btn.correct{border-color:var(--green)!important;background:rgba(74,222,128,.12)!important}
+.ox-btn.wrong{border-color:var(--red)!important;opacity:.5}
+.ox-btn.disabled{pointer-events:none}
+
+/* ── Input quiz ── */
+.input-area{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.ans-input{background:var(--bg3);border:2px solid var(--bg4);border-radius:12px;padding:14px 16px;font-size:16px;font-weight:600;color:#fff;outline:none;transition:border-color .15s;font-family:'Noto Sans KR',sans-serif;width:100%}
+.ans-input:focus{border-color:var(--gold)}
+.ans-input.correct-inp{border-color:var(--green)!important;background:rgba(74,222,128,.06)!important}
+.ans-input.wrong-inp{border-color:var(--red)!important;background:rgba(248,113,113,.05)!important}
+.hint-btn{background:none;border:1px solid var(--bg4);border-radius:8px;color:#7f9ab5;font-size:12px;padding:6px 14px;cursor:pointer;transition:all .15s;width:fit-content}
+.hint-btn:hover{border-color:var(--gold);color:var(--gold)}
+.check-btn{background:linear-gradient(135deg,var(--gold),#b8903a);border:none;border-radius:12px;color:#0d1b2a;font-size:14px;font-weight:800;padding:13px;cursor:pointer;width:100%;transition:all .15s;margin-bottom:8px}
+.check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,168,67,.25)}
+
+/* ── Feedback ── */
+.feedback{border-radius:12px;padding:14px 16px;margin-bottom:10px;display:none}
+.feedback.show{display:block;animation:fadeUp .2s ease}
+.feedback.ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25)}
+.feedback.ng{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2)}
+.feedback .fb-head{font-size:14px;font-weight:800;margin-bottom:4px}
+.feedback.ok .fb-head{color:var(--green)}.feedback.ng .fb-head{color:var(--red)}
+.feedback .fb-body{font-size:13px;color:#94aec4;line-height:1.65}
+.feedback .fb-body strong{color:#dde8f2}
+
+/* ── Next btn ── */
+.next-btn{display:none;width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#b8903a);color:#0d1b2a;font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;margin-top:4px}
+.next-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,168,67,.25)}
+.next-btn.show{display:block}
+
+/* ── Result ── */
+.result-hero{background:var(--bg2);border:1px solid var(--bg3);border-radius:20px;padding:36px 24px;text-align:center;margin:20px 0}
+.result-hero .big{font-size:68px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.result-hero .pt{font-size:18px;color:#7f9ab5;margin-top:4px}
+.result-hero .grade{font-size:22px;font-weight:800;margin-top:16px;color:#fff}
+.result-hero .msg{font-size:13px;color:#7f9ab5;margin-top:6px;line-height:1.6}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.res-cell{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+.res-cell .rn{font-size:22px;font-weight:800}.res-cell .rl{font-size:11px;color:#7f9ab5;margin-top:2px}
+.green .rn{color:var(--green)}.red .rn{color:var(--red)}.gold .rn{color:var(--gold)}
+
+/* ── Review ── */
+.review-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.review-item{background:var(--bg2);border-radius:12px;padding:14px 16px;border-left:4px solid}
+.review-item.ok-item{border-color:var(--green)}.review-item.ng-item{border-color:var(--red)}
+.review-item .ri-q{font-size:13px;color:#94aec4;margin-bottom:4px}
+.review-item .ri-a{font-size:13px;font-weight:700;color:#fff}.review-item .ri-e{font-size:12px;color:#7f9ab5;margin-top:3px}
+
+/* ── Mastery chips ── */
+.mastery-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 20px}
+.m-chip{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:700;border:1px solid}
+.m-chip.done{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
+.m-chip.mid{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.25);color:var(--amber)}
+.m-chip.weak{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2);color:var(--red)}
+.m-chip.none{background:var(--bg3);border-color:var(--bg4);color:#7f9ab5}
+
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.act{padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid;transition:all .15s;text-align:center}
+.act:hover{transform:translateY(-1px)}
+.act-p{background:linear-gradient(135deg,var(--gold),#b8903a);border-color:transparent;color:#0d1b2a}
+.act-s{background:transparent;border-color:var(--bg4);color:#dde8f2}
+.act-s:hover{border-color:var(--gold)}
+
+/* ── Table ─ */
+.ref-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.ref-table th{background:var(--bg4);color:var(--gold);padding:8px 12px;text-align:left;font-weight:700}
+.ref-table td{padding:8px 12px;border-bottom:1px solid var(--bg3);line-height:1.5;color:#c8d8e8;vertical-align:top}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table .modal-cell{font-weight:800;color:#fff;font-size:14px}
+
+@media(max-width:400px){
+  .app-header h1{font-size:22px}
+  .ox-btn{width:110px;height:90px;font-size:40px}
+  .result-hero .big{font-size:56px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ============================================================
+     HOME SCREEN
+============================================================ -->
+<div class="screen active" id="home">
+
+  <div class="app-header">
+    <div class="logo">중학영문법 3800제 · 1학년 · 3장</div>
+    <h1><em>조동사</em> 완전정복 퀴즈</h1>
+    <p>뜻 암기부터 문장 전환까지 — 5가지 모드 완전 학습</p>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-box"><div class="n" id="h-total">0</div><div class="l">총 풀이</div></div>
+    <div class="stat-box"><div class="n" id="h-rate">0%</div><div class="l">정답률</div></div>
+    <div class="stat-box"><div class="n" id="h-mastered">0</div><div class="l">마스터</div></div>
+  </div>
+
+  <div class="mode-group">
+    <div class="section-label">🔤 뜻 암기 퀴즈</div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startMode('meaning')">
+        <div class="mc-icon" style="background:rgba(96,165,250,.12)">📖</div>
+        <div><h3>조동사 뜻 맞추기</h3><p>조동사를 보고 올바른 뜻 선택 · 17개 전체 수록</p><span class="badge" style="background:rgba(96,165,250,.12);color:var(--blue)">객관식 4지선다</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('modal_pick')">
+        <div class="mc-icon" style="background:rgba(167,139,250,.12)">🎯</div>
+        <div><h3>뜻 보고 조동사 고르기</h3><p>뜻을 보고 알맞은 조동사 역방향 선택</p><span class="badge" style="background:rgba(167,139,250,.12);color:var(--purple)">객관식 4지선다</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('negative_focus')">
+        <div class="mc-icon" style="background:rgba(248,113,113,.1)">🚫</div>
+        <div><h3>부정형 집중 훈련</h3><p>must not vs don't have to 등 함정 집중 공략</p><span class="badge" style="background:rgba(248,113,113,.1);color:var(--red)">OX + 객관식</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('ox_quiz')">
+        <div class="mc-icon" style="background:rgba(45,212,191,.1)">⭕</div>
+        <div><h3>O / X 판별 퀴즈</h3><p>조동사 설명이 맞는지 틀리는지 판별</p><span class="badge" style="background:rgba(45,212,191,.1);color:var(--teal)">O/X</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mode-group">
+    <div class="section-label">🔄 문장 전환 퀴즈</div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startMode('convert_mc')">
+        <div class="mc-icon" style="background:rgba(74,222,128,.1)">🔀</div>
+        <div><h3>문장 전환 — 객관식</h3><p>can↔be able to · will↔be going to · must↔have to 전환</p><span class="badge" style="background:rgba(74,222,128,.1);color:var(--green)">객관식</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('convert_fill')">
+        <div class="mc-icon" style="background:rgba(251,191,36,.1)">✏️</div>
+        <div><h3>문장 전환 — 빈칸 채우기</h3><p>같은 뜻으로 쓰이는 어구를 직접 입력하기</p><span class="badge" style="background:rgba(251,191,36,.1);color:var(--amber)">단답형 입력</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('convert_write')">
+        <div class="mc-icon" style="background:rgba(244,114,182,.1)">📝</div>
+        <div><h3>문장 전환 — 영작 도전</h3><p>한국어 해석을 보고 전체 전환 문장 완성</p><span class="badge" style="background:rgba(244,114,182,.1);color:var(--pink)">영작 서술형</span></div>
+      </div>
+      <div class="mode-card" onclick="startMode('random_all')">
+        <div class="mc-icon" style="background:rgba(212,168,67,.12)">🎲</div>
+        <div><h3>랜덤 종합 도전 (20문제)</h3><p>모든 유형 무작위 — 실전 최종 점검</p><span class="badge" style="background:var(--gold-dim);color:var(--gold)">혼합형</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     QUIZ SCREEN
+============================================================ -->
+<div class="screen" id="quiz">
+  <button class="back-btn" onclick="tryGoHome()">← 모드 선택</button>
+
+  <div class="q-meta">
+    <span class="q-counter"><strong id="qnum">1</strong> / <span id="qtotal">10</span></span>
+    <span class="q-type-badge" id="qtype-badge">-</span>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="qprogress" style="width:0%"></div></div>
+
+  <div class="q-card" id="qcard"></div>
+  <div id="qchoices"></div>
+  <div class="feedback" id="qfeedback"><div class="fb-head" id="fb-head"></div><div class="fb-body" id="fb-body"></div></div>
+  <button class="next-btn" id="qnext" onclick="nextQ()">다음 문제 →</button>
+</div>
+
+<!-- ============================================================
+     RESULT SCREEN
+============================================================ -->
+<div class="screen" id="result">
+  <div class="app-header" style="padding-top:16px">
+    <div class="logo" id="r-mode-name">결과</div>
+    <h1>퀴즈 <em>완료!</em></h1>
+  </div>
+
+  <div class="result-hero">
+    <div class="big" id="r-score">0</div>
+    <div class="pt">점</div>
+    <div class="grade" id="r-grade"></div>
+    <div class="msg" id="r-msg"></div>
+  </div>
+
+  <div class="res-grid">
+    <div class="res-cell green"><div class="rn" id="r-ok">0</div><div class="rl">정답</div></div>
+    <div class="res-cell red"><div class="rn" id="r-ng">0</div><div class="rl">오답</div></div>
+    <div class="res-cell gold"><div class="rn" id="r-streak">0</div><div class="rl">최고연속</div></div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;color:#7f9ab5;margin:8px 0 6px;text-align:center">조동사 학습 현황</div>
+  <div class="mastery-chips" id="r-mastery"></div>
+
+  <div style="font-size:13px;font-weight:700;color:#7f9ab5;margin:8px 0 6px">오답 & 복습 노트</div>
+  <div class="review-list" id="r-review"></div>
+
+  <div class="actions">
+    <button class="act act-p" onclick="retryMode()">같은 모드 다시 도전</button>
+    <button class="act act-s" onclick="goHome()">모드 선택으로</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+
+// 17 modal entries
+const MODALS = [
+  {id:'can',w:'can',m:['~할 수 있다','~해도 된다','~해주겠니?'],u:['능력 (= be able to)','허가','요청'],cat:'pos'},
+  {id:'could',w:'could',m:['~할 수 있었다','~해주시겠어요?'],u:['can의 과거형 (과거 능력)','정중한 요청 (과거 아님)'],cat:'pos'},
+  {id:'may',w:'may',m:['~일지도 모른다','~해도 좋다'],u:['약한 추측','허가 (can보다 격식)'],cat:'pos'},
+  {id:'might',w:'might',m:['~일지도 모른다'],u:['may보다 불확실한 추측'],cat:'pos'},
+  {id:'will',w:'will',m:['~할 것이다','~해줄래요?'],u:['미래/의지','요청'],cat:'pos'},
+  {id:'would',w:'would',m:['~할 거라고 했다','~해주시겠어요?'],u:['will의 과거형','정중한 요청'],cat:'pos'},
+  {id:'would_like',w:'would like (to)',m:['~을 원하다','~하고 싶다'],u:['want / want to와 같은 의미'],cat:'pos'},
+  {id:'must',w:'must',m:['~해야 한다','~임에 틀림없다'],u:['의무 (= have to)','강한 추측'],cat:'pos'},
+  {id:'have_to',w:'have to',m:['~해야 한다'],u:['의무 (must 대체)'],cat:'pos'},
+  {id:'had_to',w:'had to',m:['~해야 했다'],u:['과거의 의무 (must 과거형 대신)'],cat:'pos'},
+  {id:'should',w:'should',m:['~해야 한다'],u:['의무/당연 (≒ ought to)'],cat:'pos'},
+  {id:'had_better',w:'had better',m:['~하는 게 낫다'],u:['강한 충고/권유'],cat:'pos'},
+  {id:'cannot',w:"cannot (can't)",m:['~해서는 안 된다'],u:['금지 (허가의 can 부정)'],cat:'neg'},
+  {id:'may_not',w:'may not',m:['~해서는 안 된다'],u:['금지 (허가의 may 부정)'],cat:'neg'},
+  {id:'must_not',w:'must not',m:['~해서는 안 된다'],u:['강한 금지 (may not보다 강함)'],cat:'neg'},
+  {id:'dont_have_to',w:"don't have to",m:['~할 필요가 없다'],u:['불필요 (금지 아님! must not과 구별)'],cat:'neg'},
+  {id:'had_better_not',w:'had better not',m:['~하지 않는 게 낫다'],u:['부정의 강한 충고 (had not better ✕)'],cat:'neg'},
+];
+
+// ── 문장 전환 데이터 (예문 반복 활용) ──
+// can ↔ be able to
+const CAN_DATA = [
+  {
+    base:"I can drive a car.",base_k:"나는 차를 운전할 수 있다.",
+    converted:"I am able to drive a car.",conv_k:"→ be able to 전환",
+    fill_word:"am able to", fill_hint:"am / are / is able to",
+    q_neg_base:"She can't drive a car.",q_neg_k:"그녀는 차를 운전할 수 없다.",
+    neg_conv:"She isn't able to drive a car.",neg_fill:"isn't able to",
+    q_int_base:"Can you drive a car?",q_int_k:"너는 차를 운전할 수 있니?",
+    int_conv:"Are you able to drive a car?",int_fill:"Are you able to",
+    past_base:"He could get a new bike on Christmas Day.",past_k:"그는 크리스마스에 새 자전거를 받을 수 있었다.",
+    past_conv:"He was able to get a new bike on Christmas Day.",past_fill:"was able to",
+    past_neg_base:"Mark couldn't drive a car.",past_neg_k:"Mark는 차를 운전할 수 없었다.",
+    past_neg_conv:"Mark wasn't able to drive a car.",past_neg_fill:"wasn't able to",
+  }
+];
+
+// will ↔ be going to
+const WILL_DATA = [
+  {
+    base:"It will snow this afternoon.",base_k:"오늘 오후에 눈이 올 것이다.",
+    converted:"It is going to snow this afternoon.",conv_fill:"is going to",
+    base2:"They will go to the museum.",base2_k:"그들은 박물관에 갈 것이다.",
+    conv2:"They are going to go to the museum.",conv2_fill:"are going to",
+    base3:"It will rain next Sunday.",base3_k:"다음 주 일요일에는 비가 올 것이다.",
+    conv3:"It is going to rain next Sunday.",conv3_fill:"is going to",
+    base4:"Will you close the window?",base4_k:"창문을 닫아 줄래요?",
+  }
+];
+
+// must ↔ have to / has to / had to
+const MUST_DATA = [
+  {
+    base:"We must go to Seoul now.",base_k:"우리는 지금 서울에 가야 한다.",
+    converted:"We have to go to Seoul now.",conv_fill:"have to",
+    base2:"She must go to Seoul now.",base2_k:"그녀는 지금 서울에 가야 한다.",
+    conv2:"She has to go to Seoul now.",conv2_fill:"has to",
+    past:"We had to go to Seoul yesterday.",past_k:"우리는 어제 서울에 가야 했다.",
+    base3:"We must go to Seoul now.",base3_k:"우리는 지금 서울에 가야 한다.",
+    base4:"The baby is crying. She must be sleepy.",base4_k:"아기가 울고 있다. 그녀는 졸린 게 틀림없다.",
+  }
+];
+
+// would like ↔ want
+const WL_DATA = [
+  {
+    base:"Would you like some ice cream?",base_k:"너는 아이스크림을 좀 원하니?",
+    converted:"Do you want some ice cream?",conv_fill:"Do you want",
+    base2:"I'd like to go to sleep.",base2_k:"나는 잠자러 가고 싶다.",
+    conv2:"I want to go to sleep.",conv2_fill:"want to",
+  }
+];
+
+// should ↔ ought to
+const SH_DATA = [
+  {
+    base:"I should call her tonight.",base_k:"나는 오늘 밤에 그녀에게 전화해야 한다.",
+    converted:"I ought to call her tonight.",conv_fill:"ought to",
+    base2:"You should come home by 8 o'clock.",base2_k:"너는 집에 8시까지 와야 한다.",
+    conv2:"You ought to come home by 8 o'clock.",conv2_fill:"ought to",
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  QUESTION GENERATORS
+// ═══════════════════════════════════════════════════════
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r}
+function wrong4(correctId, getText){
+  return shuffle(MODALS.filter(m=>m.id!==correctId).map(getText)).slice(0,3);
+}
+
+// MODE 1: 뜻 맞추기 (modal → meaning)
+function genMeaning(){
+  const m=pick(MODALS);
+  const correct=m.m.join(' / ');
+  const ws=wrong4(m.id,x=>x.m.join(' / '));
+  return {type:'mc',tag:'📖 뜻 맞추기',modals:[m.id],
+    stem:'이 조동사의 뜻은?',eng:m.w,kor:'',
+    correct,choices:shuffle([correct,...ws]),
+    explain:`<strong>${m.w}</strong> = ${m.m.join(', ')}<br><span style="color:#7f9ab5">${m.u.join(' / ')}</span>`};
+}
+
+// MODE 2: 조동사 맞추기 (meaning → modal)
+function genModalPick(){
+  const m=pick(MODALS);
+  const desc=m.m[0]+' — '+m.u[0];
+  const ws=wrong4(m.id,x=>x.w);
+  return {type:'mc',tag:'🎯 조동사 고르기',modals:[m.id],
+    stem:`"${m.m[0]}"의 뜻으로 쓰이는 조동사는?`,eng:'',kor:m.u[0],
+    correct:m.w,choices:shuffle([m.w,...ws]),
+    explain:`정답: <strong>${m.w}</strong> = ${m.m.join(', ')}`};
+}
+
+// MODE 3: 부정형 집중
+const NEG_QS = [
+  {tag:'🚫 부정형',modals:['must_not','dont_have_to'],type:'mc',
+   stem:'다음 중 뜻이 완전히 다른 두 표현은?',eng:'must not  vs  don\'t have to',kor:'',
+   correct:"must not = 금지,  don't have to = 불필요",
+   choices:shuffle(["must not = 금지,  don't have to = 불필요","둘 다 금지","둘 다 불필요","비슷한 의미로 혼용 가능"]),
+   explain:"<strong>must not</strong> = 강한 금지 / <strong>don't have to</strong> = 불필요(~할 필요 없다). 의미가 전혀 다름!"},
+  {tag:'🚫 부정형',modals:['had_better_not'],type:'mc',
+   stem:'had better의 부정형으로 올바른 것은?',eng:'',kor:'',
+   correct:'had better not + 동사원형',
+   choices:shuffle(['had better not + 동사원형','had not better + 동사원형','hadn\'t better + 동사원형','not had better + 동사원형']),
+   explain:"<strong>had better not</strong>이 올바른 형태. had <u>not</u> better (✕)"},
+  {tag:'🚫 부정형',modals:['must_not'],type:'mc',
+   stem:'"너는 여기서 수영해서는 안 된다" — 가장 강한 금지 표현은?',eng:'',kor:'',
+   correct:'You must not swim here.',
+   choices:shuffle(['You must not swim here.','You may not swim here.','You cannot swim here.','You don\'t have to swim here.']),
+   explain:"<strong>must not</strong>이 가장 강한 금지. may not / cannot보다 강함"},
+  {tag:'🚫 부정형',modals:['dont_have_to'],type:'mc',
+   stem:'"너는 내일 올 필요가 없다"를 영어로?',eng:'',kor:'',
+   correct:"You don't have to come tomorrow.",
+   choices:shuffle(["You don't have to come tomorrow.","You must not come tomorrow.","You may not come tomorrow.","You cannot come tomorrow."]),
+   explain:"<strong>don't have to</strong> = 불필요(~할 필요 없다). must not(금지)과 혼동 금지!"},
+  {tag:'🚫 부정형',modals:['cannot'],type:'mc',
+   stem:"cannot (can't)의 의미는?",eng:"You can't take photos here.",kor:'',
+   correct:'~해서는 안 된다 (금지)',
+   choices:shuffle(['~해서는 안 된다 (금지)','~할 필요가 없다','~할 수 없다 (능력 없음)','~하지 않는 게 낫다']),
+   explain:"허가의 can 부정 → <strong>cannot</strong> = 금지"},
+  {tag:'🚫 부정형',modals:['may_not'],type:'ox',
+   stem:"may not은 '~할지도 모른다'의 부정이므로 '~가 아닐지도 모른다'는 뜻이다.",eng:'',kor:'',
+   correct:false,
+   explain:"허가의 may를 부정하면 <strong>금지(~해서는 안 된다)</strong>가 된다."},
+  {tag:'🚫 부정형',modals:['must_not','dont_have_to'],type:'ox',
+   stem:"must not과 don't have to는 둘 다 '금지'의 의미를 가진다.",eng:'',kor:'',
+   correct:false,
+   explain:"<strong>must not</strong> = 금지, <strong>don't have to</strong> = 불필요. 완전히 다름!"},
+  {tag:'🚫 부정형',modals:['had_better_not'],type:'ox',
+   stem:"'had better not + 동사원형'은 부정의 강한 충고를 나타낸다.",eng:'',kor:'',
+   correct:true,
+   explain:"<strong>had better not</strong> + 동사원형 = ~하지 않는 게 낫다 (올바른 표현)"},
+  {tag:'🚫 부정형',modals:['must_not'],type:'mc',
+   stem:'"반드시 해서는 안 된다"는 뜻으로 가장 강한 것은?',eng:'',kor:'',
+   correct:'must not',
+   choices:shuffle(['must not','may not',"cannot (can't)",'had better not']),
+   explain:"금지 강도: <strong>must not</strong> > may not = cannot"},
+];
+
+function genNegativeFocus(){return pick(NEG_QS)}
+
+// MODE 4: O/X
+const OX_QS = [
+  {modals:['can'],stem:"can이 '능력'을 나타낼 때 be able to로 바꿔 쓸 수 있다.",correct:true,explain:"<strong>can(능력) = be able to</strong>"},
+  {modals:['could'],stem:"could는 항상 can의 과거형이다.",correct:false,explain:"could는 과거 능력뿐 아니라 <strong>정중한 요청</strong>으로도 쓰인다."},
+  {modals:['may'],stem:"may는 can보다 격식을 차린 허가 표현이다.",correct:true,explain:"<strong>may</strong> = 격식체 허가"},
+  {modals:['might'],stem:"might는 may보다 더 확실한 추측을 나타낸다.",correct:false,explain:"<strong>might</strong>는 may보다 <u>불확실한</u> 추측"},
+  {modals:['will'],stem:"will은 미래와 의지를 나타낸다.",correct:true,explain:"<strong>will</strong> → 미래/의지"},
+  {modals:['would'],stem:"would는 오직 will의 과거형으로만 쓰인다.",correct:false,explain:"would는 <strong>정중한 요청</strong>으로도 쓰인다."},
+  {modals:['would_like'],stem:"would like to는 want to와 같은 의미이다.",correct:true,explain:"<strong>would like to = want to</strong>"},
+  {modals:['must'],stem:"must는 의무와 강한 추측, 두 가지 의미를 가진다.",correct:true,explain:"<strong>must</strong> = ①의무 ②강한 추측"},
+  {modals:['had_to'],stem:"must의 과거형은 musted이다.",correct:false,explain:"must에는 과거형이 없다. 과거 의무 = <strong>had to</strong>"},
+  {modals:['have_to'],stem:"have to는 must(의무)와 대체해 쓸 수 있다.",correct:true,explain:"<strong>have to = must</strong> (의무)"},
+  {modals:['should'],stem:"should는 ought to와 비슷한 의미이다.",correct:true,explain:"<strong>should ≒ ought to</strong> (~해야 한다)"},
+  {modals:['had_better'],stem:"had better는 가벼운 제안을 나타낸다.",correct:false,explain:"<strong>had better</strong>는 <u>강한</u> 충고/권유이다."},
+  {modals:['must_not','dont_have_to'],stem:"must not과 don't have to는 같은 뜻이다.",correct:false,explain:"<strong>must not</strong>=금지 ≠ <strong>don't have to</strong>=불필요"},
+  {modals:['had_better_not'],stem:"had better의 부정은 had not better이다.",correct:false,explain:"올바른 형태: <strong>had better not</strong>"},
+  {modals:['cannot'],stem:"cannot은 허가의 can을 부정한 것으로 금지를 나타낸다.",correct:true,explain:"<strong>cannot</strong>=허가의 can 부정 → 금지"},
+  {modals:['may_not'],stem:"may not은 추측만 부정한다.",correct:false,explain:"<strong>may not</strong>은 허가의 may 부정 → 금지도 나타낸다."},
+];
+
+function genOX(){
+  const q=pick(OX_QS);
+  return {...q,type:'ox',tag:'⭕ O/X 퀴즈',
+    explain:q.explain};
+}
+
+// ─── 문장 전환 — 객관식 ─────────────────────────────────
+const CONV_MC = [
+  // can ↔ be able to
+  {tag:'🔀 전환: can',modals:['can'],type:'mc',
+   stem:"다음 문장을 be able to로 전환하면?",eng:"I can drive a car.",kor:"나는 차를 운전할 수 있다.",
+   correct:"I am able to drive a car.",
+   choices:shuffle(["I am able to drive a car.","I is able to drive a car.","I be able to drive a car.","I are able to drive a car."]),
+   explain:"I → <strong>am able to</strong>"},
+  {tag:'🔀 전환: can',modals:['can'],type:'mc',
+   stem:"다음 문장을 be able to로 전환하면?",eng:"She can't drive a car.",kor:"그녀는 차를 운전할 수 없다.",
+   correct:"She isn't able to drive a car.",
+   choices:shuffle(["She isn't able to drive a car.","She aren't able to drive a car.","She not able to drive a car.","She doesn't able to drive a car."]),
+   explain:"She → <strong>isn't able to</strong>"},
+  {tag:'🔀 전환: can',modals:['can'],type:'mc',
+   stem:"의문문을 be able to로 전환하면?",eng:"Can you drive a car?",kor:"너는 차를 운전할 수 있니?",
+   correct:"Are you able to drive a car?",
+   choices:shuffle(["Are you able to drive a car?","Is you able to drive a car?","Do you able to drive a car?","Were you able to drive a car?"]),
+   explain:"You → <strong>Are you able to</strong>"},
+  {tag:'🔀 전환: could',modals:['could'],type:'mc',
+   stem:"다음 문장을 be able to로 전환하면?",eng:"He could get a new bike on Christmas Day.",kor:"그는 크리스마스에 새 자전거를 받을 수 있었다.",
+   correct:"He was able to get a new bike on Christmas Day.",
+   choices:shuffle(["He was able to get a new bike on Christmas Day.","He is able to get a new bike on Christmas Day.","He were able to get a new bike on Christmas Day.","He has able to get a new bike on Christmas Day."]),
+   explain:"could(과거) → <strong>was able to</strong>"},
+  {tag:'🔀 전환: could',modals:['could'],type:'mc',
+   stem:"다음 문장을 be able to로 전환하면?",eng:"Mark couldn't drive a car.",kor:"Mark는 차를 운전할 수 없었다.",
+   correct:"Mark wasn't able to drive a car.",
+   choices:shuffle(["Mark wasn't able to drive a car.","Mark isn't able to drive a car.","Mark weren't able to drive a car.","Mark didn't able to drive a car."]),
+   explain:"couldn't(과거) → <strong>wasn't able to</strong>"},
+  // will ↔ be going to
+  {tag:'🔀 전환: will',modals:['will'],type:'mc',
+   stem:"다음 문장을 be going to로 전환하면?",eng:"It will snow this afternoon.",kor:"오늘 오후에 눈이 올 것이다.",
+   correct:"It is going to snow this afternoon.",
+   choices:shuffle(["It is going to snow this afternoon.","It are going to snow this afternoon.","It will going to snow this afternoon.","It be going to snow this afternoon."]),
+   explain:"It → <strong>is going to</strong>"},
+  {tag:'🔀 전환: will',modals:['will'],type:'mc',
+   stem:"다음 문장을 be going to로 전환하면?",eng:"They will go to the museum.",kor:"그들은 박물관에 갈 것이다.",
+   correct:"They are going to go to the museum.",
+   choices:shuffle(["They are going to go to the museum.","They is going to go to the museum.","They am going to go to the museum.","They will going to go to the museum."]),
+   explain:"They → <strong>are going to</strong>"},
+  {tag:'🔀 전환: will',modals:['will'],type:'mc',
+   stem:"다음 문장을 be going to로 전환하면?",eng:"It will rain next Sunday.",kor:"다음 주 일요일에는 비가 올 것이다.",
+   correct:"It is going to rain next Sunday.",
+   choices:shuffle(["It is going to rain next Sunday.","They are going to rain next Sunday.","It are going to rain next Sunday.","It was going to rain next Sunday."]),
+   explain:"It → <strong>is going to</strong>"},
+  // must ↔ have to
+  {tag:'🔀 전환: must',modals:['must','have_to'],type:'mc',
+   stem:"다음 문장을 have to로 전환하면?",eng:"We must go to Seoul now.",kor:"우리는 지금 서울에 가야 한다.",
+   correct:"We have to go to Seoul now.",
+   choices:shuffle(["We have to go to Seoul now.","We has to go to Seoul now.","We had to go to Seoul now.","We are have to go to Seoul now."]),
+   explain:"We → <strong>have to</strong>"},
+  {tag:'🔀 전환: must',modals:['must','have_to'],type:'mc',
+   stem:"3인칭 단수 주어일 때 must → have to 전환은?",eng:"She must go to Seoul now.",kor:"그녀는 지금 서울에 가야 한다.",
+   correct:"She has to go to Seoul now.",
+   choices:shuffle(["She has to go to Seoul now.","She have to go to Seoul now.","She had to go to Seoul now.","She must to go to Seoul now."]),
+   explain:"She(3인칭 단수) → <strong>has to</strong>"},
+  {tag:'🔀 전환: must',modals:['had_to'],type:'mc',
+   stem:"must의 과거를 나타낼 때 쓰는 표현은?",eng:"We ___ go to Seoul yesterday.",kor:"우리는 어제 서울에 가야 했다.",
+   correct:"had to",
+   choices:shuffle(["had to","have to","must","musted"]),
+   explain:"must에는 과거형이 없다 → <strong>had to</strong> 사용"},
+  {tag:'🔀 전환: must',modals:['must'],type:'mc',
+   stem:"강한 추측의 must는 have to로 바꿀 수 있는가?",eng:"She must be sleepy.",kor:"그녀는 졸린 게 틀림없다.",
+   correct:"바꿀 수 없다 (강한 추측의 must는 전환 불가)",
+   choices:shuffle(["바꿀 수 없다 (강한 추측의 must는 전환 불가)","She has to be sleepy.","She have to be sleepy.","She had to be sleepy."]),
+   explain:"<strong>의무의 must만</strong> have to로 전환 가능. 추측의 must는 불가!"},
+  // would like ↔ want
+  {tag:'🔀 전환: would like',modals:['would_like'],type:'mc',
+   stem:"다음 문장을 want로 전환하면?",eng:"Would you like some ice cream?",kor:"너는 아이스크림을 좀 원하니?",
+   correct:"Do you want some ice cream?",
+   choices:shuffle(["Do you want some ice cream?","Are you want some ice cream?","Would you want some ice cream?","Do you would like some ice cream?"]),
+   explain:"<strong>Would you like</strong> → <strong>Do you want</strong>"},
+  {tag:'🔀 전환: would like',modals:['would_like'],type:'mc',
+   stem:"다음 문장을 want to로 전환하면?",eng:"I'd like to go to sleep.",kor:"나는 잠자러 가고 싶다.",
+   correct:"I want to go to sleep.",
+   choices:shuffle(["I want to go to sleep.","I wants to go to sleep.","I am want to go to sleep.","I would want to go to sleep."]),
+   explain:"<strong>I'd like to = I want to</strong>"},
+  // should ↔ ought to
+  {tag:'🔀 전환: should',modals:['should'],type:'mc',
+   stem:"다음 문장을 ought to로 전환하면?",eng:"I should call her tonight.",kor:"나는 오늘 밤에 그녀에게 전화해야 한다.",
+   correct:"I ought to call her tonight.",
+   choices:shuffle(["I ought to call her tonight.","I ought call her tonight.","I oughts to call her tonight.","I should ought to call her tonight."]),
+   explain:"<strong>should = ought to</strong>"},
+  {tag:'🔀 전환: should',modals:['should'],type:'mc',
+   stem:"다음 문장을 ought to로 전환하면?",eng:"You should come home by 8 o'clock.",kor:"너는 집에 8시까지 와야 한다.",
+   correct:"You ought to come home by 8 o'clock.",
+   choices:shuffle(["You ought to come home by 8 o'clock.","You ought come home by 8 o'clock.","You ought to coming home by 8 o'clock.","You should to come home by 8 o'clock."]),
+   explain:"<strong>should = ought to</strong>"},
+];
+
+function genConvertMC(){return pick(CONV_MC)}
+
+// ─── 문장 전환 — 빈칸 채우기 ────────────────────────────
+const CONV_FILL = [
+  // can ↔ be able to
+  {tag:'✏️ 빈칸: can',modals:['can'],type:'fill',
+   stem:"can → be able to 빈칸 완성 (주어: I)",
+   eng:"I can drive a car.",kor:"나는 차를 운전할 수 있다.",
+   template:"I [____] drive a car.",answer:"am able to",hint:"am / are / is able to",
+   explain:"I → <strong>am able to</strong>"},
+  {tag:'✏️ 빈칸: can',modals:['can'],type:'fill',
+   stem:"부정문 전환 (She can't → be able to)",
+   eng:"She can't drive a car.",kor:"그녀는 차를 운전할 수 없다.",
+   template:"She [____] drive a car.",answer:"isn't able to",hint:"isn't / aren't able to",
+   explain:"She → <strong>isn't able to</strong>"},
+  {tag:'✏️ 빈칸: can',modals:['can'],type:'fill',
+   stem:"의문문 전환 (Can you → Are you able to?)",
+   eng:"Can you drive a car?",kor:"너는 차를 운전할 수 있니?",
+   template:"[____] drive a car?",answer:"Are you able to",hint:"be동사를 주어 앞으로",
+   explain:"<strong>Are you able to</strong> drive a car?"},
+  {tag:'✏️ 빈칸: could',modals:['could'],type:'fill',
+   stem:"could → was/were able to 전환",
+   eng:"He could get a new bike on Christmas Day.",kor:"그는 크리스마스에 새 자전거를 받을 수 있었다.",
+   template:"He [____] get a new bike on Christmas Day.",answer:"was able to",hint:"과거형 be동사",
+   explain:"He + 과거 → <strong>was able to</strong>"},
+  {tag:'✏️ 빈칸: could',modals:['could'],type:'fill',
+   stem:"과거 부정문 전환 (couldn't → wasn't able to)",
+   eng:"Mark couldn't drive a car.",kor:"Mark는 차를 운전할 수 없었다.",
+   template:"Mark [____] drive a car.",answer:"wasn't able to",hint:"과거 부정 be동사",
+   explain:"Mark → <strong>wasn't able to</strong>"},
+  // will ↔ be going to
+  {tag:'✏️ 빈칸: will',modals:['will'],type:'fill',
+   stem:"will → be going to 전환 (단수)",
+   eng:"It will snow this afternoon.",kor:"오늘 오후에 눈이 올 것이다.",
+   template:"It [____] snow this afternoon.",answer:"is going to",hint:"is / are / am going to",
+   explain:"It → <strong>is going to</strong>"},
+  {tag:'✏️ 빈칸: will',modals:['will'],type:'fill',
+   stem:"will → be going to 전환 (복수)",
+   eng:"They will go to the museum.",kor:"그들은 박물관에 갈 것이다.",
+   template:"They [____] go to the museum.",answer:"are going to",hint:"is / are / am going to",
+   explain:"They → <strong>are going to</strong>"},
+  {tag:'✏️ 빈칸: will',modals:['will'],type:'fill',
+   stem:"will → be going to 전환",
+   eng:"It will rain next Sunday.",kor:"다음 주 일요일에는 비가 올 것이다.",
+   template:"It [____] rain next Sunday.",answer:"is going to",hint:"단수 주어",
+   explain:"It → <strong>is going to</strong>"},
+  // must ↔ have to
+  {tag:'✏️ 빈칸: must',modals:['must','have_to'],type:'fill',
+   stem:"must → have to 전환 (복수 주어)",
+   eng:"We must go to Seoul now.",kor:"우리는 지금 서울에 가야 한다.",
+   template:"We [____] go to Seoul now.",answer:"have to",hint:"have / has to",
+   explain:"We → <strong>have to</strong>"},
+  {tag:'✏️ 빈칸: must',modals:['must','have_to'],type:'fill',
+   stem:"must → has to 전환 (3인칭 단수)",
+   eng:"She must go to Seoul now.",kor:"그녀는 지금 서울에 가야 한다.",
+   template:"She [____] go to Seoul now.",answer:"has to",hint:"have / has to",
+   explain:"She → <strong>has to</strong>"},
+  {tag:'✏️ 빈칸: must',modals:['had_to'],type:'fill',
+   stem:"과거 의무 — 빈칸 완성",
+   eng:"We ___ go to Seoul yesterday.",kor:"우리는 어제 서울에 가야 했다.",
+   template:"We [____] go to Seoul yesterday.",answer:"had to",hint:"must의 과거 대체",
+   explain:"must 과거형 없음 → <strong>had to</strong>"},
+  // would like ↔ want
+  {tag:'✏️ 빈칸: would like',modals:['would_like'],type:'fill',
+   stem:"would like → want 전환 (의문문)",
+   eng:"Would you like some ice cream?",kor:"너는 아이스크림을 좀 원하니?",
+   template:"[____] some ice cream?",answer:"Do you want",hint:"일반동사 의문문으로",
+   explain:"<strong>Do you want</strong> some ice cream?"},
+  {tag:'✏️ 빈칸: would like',modals:['would_like'],type:'fill',
+   stem:"would like to → want to 전환",
+   eng:"I'd like to go to sleep.",kor:"나는 잠자러 가고 싶다.",
+   template:"I [____] go to sleep.",answer:"want to",hint:"want to",
+   explain:"I'd like to → <strong>I want to</strong>"},
+  // should ↔ ought to
+  {tag:'✏️ 빈칸: should',modals:['should'],type:'fill',
+   stem:"should → ought to 전환",
+   eng:"I should call her tonight.",kor:"나는 오늘 밤에 그녀에게 전화해야 한다.",
+   template:"I [____] call her tonight.",answer:"ought to",hint:"비슷한 의미의 조동사구",
+   explain:"<strong>ought to</strong> = should"},
+  {tag:'✏️ 빈칸: should',modals:['should'],type:'fill',
+   stem:"should → ought to 전환",
+   eng:"You should come home by 8 o'clock.",kor:"너는 집에 8시까지 와야 한다.",
+   template:"You [____] come home by 8 o'clock.",answer:"ought to",hint:"비슷한 의미의 조동사구",
+   explain:"<strong>ought to</strong> = should"},
+];
+
+function genConvertFill(){
+  const q=pick(CONV_FILL);
+  return {...q,
+    stem2: q.template,
+  };
+}
+
+// ─── 문장 전환 — 영작 ──────────────────────────────────
+const CONV_WRITE = [
+  {tag:'📝 영작',modals:['can'],type:'write',
+   stem:"다음을 be able to를 사용해 영어로 쓰세요.",kor:"나는 차를 운전할 수 있다.",
+   answer:"I am able to drive a car.",hint:"I + am able to",
+   explain:"<strong>I am able to drive a car.</strong>"},
+  {tag:'📝 영작',modals:['can'],type:'write',
+   stem:"다음을 be able to를 사용해 영어로 쓰세요.",kor:"그녀는 차를 운전할 수 없다.",
+   answer:"She isn't able to drive a car.",hint:"She + isn't able to",
+   explain:"<strong>She isn't able to drive a car.</strong>"},
+  {tag:'📝 영작',modals:['can'],type:'write',
+   stem:"다음을 be able to를 사용해 의문문으로 쓰세요.",kor:"너는 차를 운전할 수 있니?",
+   answer:"Are you able to drive a car?",hint:"Are you able to ~?",
+   explain:"<strong>Are you able to drive a car?</strong>"},
+  {tag:'📝 영작',modals:['could'],type:'write',
+   stem:"다음을 was/were able to로 전환하세요.",kor:"그는 크리스마스에 새 자전거를 받을 수 있었다.",
+   answer:"He was able to get a new bike on Christmas Day.",hint:"He + was able to",
+   explain:"<strong>He was able to get a new bike on Christmas Day.</strong>"},
+  {tag:'📝 영작',modals:['could'],type:'write',
+   stem:"다음을 wasn't able to로 전환하세요.",kor:"Mark는 차를 운전할 수 없었다.",
+   answer:"Mark wasn't able to drive a car.",hint:"Mark + wasn't able to",
+   explain:"<strong>Mark wasn't able to drive a car.</strong>"},
+  {tag:'📝 영작',modals:['will'],type:'write',
+   stem:"다음을 be going to를 사용해 쓰세요.",kor:"오늘 오후에 눈이 올 것이다.",
+   answer:"It is going to snow this afternoon.",hint:"It + is going to",
+   explain:"<strong>It is going to snow this afternoon.</strong>"},
+  {tag:'📝 영작',modals:['will'],type:'write',
+   stem:"다음을 be going to를 사용해 쓰세요.",kor:"그들은 박물관에 갈 것이다.",
+   answer:"They are going to go to the museum.",hint:"They + are going to",
+   explain:"<strong>They are going to go to the museum.</strong>"},
+  {tag:'📝 영작',modals:['will'],type:'write',
+   stem:"다음을 be going to를 사용해 쓰세요.",kor:"다음 주 일요일에는 비가 올 것이다.",
+   answer:"It is going to rain next Sunday.",hint:"It + is going to",
+   explain:"<strong>It is going to rain next Sunday.</strong>"},
+  {tag:'📝 영작',modals:['must','have_to'],type:'write',
+   stem:"다음을 have to로 전환하세요.",kor:"우리는 지금 서울에 가야 한다.",
+   answer:"We have to go to Seoul now.",hint:"We + have to",
+   explain:"<strong>We have to go to Seoul now.</strong>"},
+  {tag:'📝 영작',modals:['must','have_to'],type:'write',
+   stem:"다음을 has to로 전환하세요.",kor:"그녀는 지금 서울에 가야 한다.",
+   answer:"She has to go to Seoul now.",hint:"She(3인칭 단수) + has to",
+   explain:"<strong>She has to go to Seoul now.</strong>"},
+  {tag:'📝 영작',modals:['had_to'],type:'write',
+   stem:"과거 의무를 영어로 쓰세요.",kor:"우리는 어제 서울에 가야 했다.",
+   answer:"We had to go to Seoul yesterday.",hint:"We + had to + yesterday",
+   explain:"<strong>We had to go to Seoul yesterday.</strong>"},
+  {tag:'📝 영작',modals:['would_like'],type:'write',
+   stem:"want를 사용해 전환하세요.",kor:"너는 아이스크림을 좀 원하니?",
+   answer:"Do you want some ice cream?",hint:"Do you want ~?",
+   explain:"<strong>Do you want some ice cream?</strong>"},
+  {tag:'📝 영작',modals:['would_like'],type:'write',
+   stem:"want to를 사용해 전환하세요.",kor:"나는 잠자러 가고 싶다.",
+   answer:"I want to go to sleep.",hint:"I want to ~",
+   explain:"<strong>I want to go to sleep.</strong>"},
+  {tag:'📝 영작',modals:['should'],type:'write',
+   stem:"ought to를 사용해 전환하세요.",kor:"나는 오늘 밤에 그녀에게 전화해야 한다.",
+   answer:"I ought to call her tonight.",hint:"I ought to ~",
+   explain:"<strong>I ought to call her tonight.</strong>"},
+  {tag:'📝 영작',modals:['should'],type:'write',
+   stem:"ought to를 사용해 전환하세요.",kor:"너는 집에 8시까지 와야 한다.",
+   answer:"You ought to come home by 8 o'clock.",hint:"You ought to ~",
+   explain:"<strong>You ought to come home by 8 o'clock.</strong>"},
+];
+
+function genConvertWrite(){
+  const q=pick(CONV_WRITE);
+  return {...q};
+}
+
+// ═══════════════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════════════
+let mode='', qs=[], qi=0, correct=0, wrong=0, streak=0, maxStreak=0, answered=false;
+let log=[]; // {ok, qtext, answer, explain}
+let mastery={};
+MODALS.forEach(m=>mastery[m.id]={c:0,w:0});
+
+function saveMastery(){try{sessionStorage.setItem('mq_m',JSON.stringify(mastery))}catch(e){}}
+function loadMastery(){try{const d=sessionStorage.getItem('mq_m');if(d)mastery=JSON.parse(d)}catch(e){}}
+loadMastery();
+
+const MODE_NAMES={
+  meaning:'📖 뜻 맞추기',modal_pick:'🎯 조동사 고르기',
+  negative_focus:'🚫 부정형 집중',ox_quiz:'⭕ O/X 퀴즈',
+  convert_mc:'🔀 전환 객관식',convert_fill:'✏️ 전환 빈칸',
+  convert_write:'📝 영작 도전',random_all:'🎲 랜덤 종합'
+};
+
+const GENS={
+  meaning:genMeaning, modal_pick:genModalPick,
+  negative_focus:genNegativeFocus, ox_quiz:genOX,
+  convert_mc:genConvertMC, convert_fill:genConvertFill,
+  convert_write:genConvertWrite
+};
+
+function startMode(m){
+  mode=m; qi=0; correct=0; wrong=0; streak=0; maxStreak=0; answered=false; log=[];
+  qs=[];
+  const count=m==='random_all'?20:12;
+  if(m==='random_all'){
+    const types=['meaning','modal_pick','negative_focus','ox_quiz','convert_mc','convert_fill','convert_write'];
+    for(let i=0;i<count;i++) qs.push(GENS[pick(types)]());
+  } else {
+    for(let i=0;i<count;i++) qs.push(GENS[m]());
+  }
+  showScreen('quiz');
+  document.getElementById('qtotal').textContent=count;
+  renderQ();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function renderQ(){
+  answered=false;
+  const q=qs[qi], total=qs.length;
+  document.getElementById('qnum').textContent=qi+1;
+  document.getElementById('qprogress').style.width=(qi/total*100)+'%';
+  document.getElementById('qtype-badge').textContent=q.tag||'퀴즈';
+  const fb=document.getElementById('qfeedback');
+  fb.className='feedback'; fb.style.display='none';
+  document.getElementById('qnext').className='next-btn';
+
+  // Card
+  let cardH='';
+  if(q.stem) cardH+=`<div class="q-label">${q.stem}</div>`;
+  if(q.eng)  cardH+=`<div class="q-eng">${q.eng}</div>`;
+  if(q.kor)  cardH+=`<div class="q-kor">${q.kor}</div>`;
+  if(q.type==='fill'&&q.template){
+    const disp=q.template.replace(/\[____\]/,'<span class="q-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+    cardH+=`<div class="q-eng" style="margin-top:12px">${disp}</div>`;
+    if(q.kor) cardH+=`<div class="q-kor">${q.kor}</div>`;
+  }
+  if(q.type==='write'){
+    cardH+=`<div class="q-kor" style="font-size:16px;font-weight:700;color:#c8d8e8;margin-top:8px">${q.kor}</div>`;
+  }
+  document.getElementById('qcard').innerHTML=cardH;
+
+  // Choices
+  const ch=document.getElementById('qchoices');
+  ch.innerHTML='';
+  const marks=['①','②','③','④'];
+
+  if(q.type==='mc'){
+    const div=document.createElement('div');div.className='choices';
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');
+      btn.className='ch-btn';
+      btn.innerHTML=`<span class="mk">${marks[i]}</span>${c}`;
+      btn.onclick=()=>answerMC(btn,c,q);
+      div.appendChild(btn);
+    });
+    ch.appendChild(div);
+
+  } else if(q.type==='ox'){
+    ch.innerHTML=`<div class="ox-row">
+      <button class="ox-btn ob" onclick="answerOX(this,true,'${encodeQ(q.explain)}','${encodeQ(q.modals.join(','))}')">O</button>
+      <button class="ox-btn xb" onclick="answerOX(this,false,'${encodeQ(q.explain)}','${encodeQ(q.modals.join(','))}')">X</button>
+    </div>`;
+
+  } else if(q.type==='fill'||q.type==='write'){
+    const label=q.type==='fill'?'빈칸에 알맞은 말을 입력하세요':'전환된 영어 문장을 입력하세요';
+    ch.innerHTML=`<div class="input-area">
+      <input type="text" class="ans-input" id="ans-inp" placeholder="${label}" autocomplete="off" spellcheck="false">
+      <button class="hint-btn" onclick="showHint()">💡 힌트 보기</button>
+    </div>`;
+    document.getElementById('ans-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkInput(q)});
+    ch.innerHTML+=`<button class="check-btn" onclick="checkInput(qs[qi])">확인하기</button>`;
+  }
+}
+
+function encodeQ(s){return encodeURIComponent(s||'')}
+function decodeQ(s){return decodeURIComponent(s||'')}
+
+// ── MC answer ──
+function answerMC(btn, val, q){
+  if(answered)return;
+  answered=true;
+  const ok=val===q.correct;
+  updateMastery(q.modals,ok);
+  if(ok){correct++;streak++;maxStreak=Math.max(streak,maxStreak);}else{wrong++;streak=0;}
+  document.querySelectorAll('.ch-btn').forEach(b=>{
+    b.classList.add('disabled');
+    const txt=b.textContent.substring(1).trim();
+    if(txt===q.correct)b.classList.add('correct');
+    else if(b===btn&&!ok)b.classList.add('wrong');
+  });
+  log.push({ok,qtext:q.eng||q.stem,answer:q.correct,explain:q.explain});
+  showFB(ok,q.explain);
+}
+
+// ── OX answer ──
+function answerOX(btn,val,explainE,modalsE){
+  if(answered)return;
+  answered=true;
+  const explain=decodeQ(explainE), modalsArr=decodeQ(modalsE).split(',');
+  const q=qs[qi];
+  const ok=val===q.correct;
+  updateMastery(modalsArr,ok);
+  if(ok){correct++;streak++;maxStreak=Math.max(streak,maxStreak);}else{wrong++;streak=0;}
+  document.querySelectorAll('.ox-btn').forEach(b=>b.classList.add('disabled'));
+  if(q.correct===true){
+    document.querySelector('.ob').classList.add('correct');
+    if(!ok)document.querySelector('.xb').classList.add('wrong');
+  }else{
+    document.querySelector('.xb').classList.add('correct');
+    if(!ok)document.querySelector('.ob').classList.add('wrong');
+  }
+  log.push({ok,qtext:q.stem,answer:q.correct?'O (참)':'X (거짓)',explain});
+  showFB(ok,explain);
+}
+
+// ── Fill/Write answer ──
+function checkInput(q){
+  if(answered)return;
+  const inp=document.getElementById('ans-inp');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val)return;
+  answered=true;
+
+  // flexible check: normalize
+  const normalize=s=>s.toLowerCase().replace(/['\u2019\u2018]/g,"'").replace(/\s+/g,' ').trim();
+  const ok=normalize(val)===normalize(q.answer);
+
+  inp.classList.add(ok?'correct-inp':'wrong-inp');
+  inp.disabled=true;
+  if(!ok){
+    const hint=document.createElement('div');
+    hint.style.cssText='margin-top:6px;font-size:13px;color:#f87171;font-weight:600';
+    hint.innerHTML=`정답: <span style="color:#fff">${q.answer}</span>`;
+    inp.parentElement.appendChild(hint);
+  }
+
+  updateMastery(q.modals,ok);
+  if(ok){correct++;streak++;maxStreak=Math.max(streak,maxStreak);}else{wrong++;streak=0;}
+  log.push({ok,qtext:q.eng||q.kor,answer:q.answer,explain:q.explain});
+  document.querySelector('.check-btn').style.display='none';
+  showFB(ok,q.explain);
+}
+
+function showHint(){
+  const q=qs[qi];
+  const hint=q.hint||q.answer;
+  const hEl=document.querySelector('.hint-btn');
+  if(hEl){hEl.textContent='💡 '+hint;hEl.style.color='var(--gold)';hEl.disabled=true;}
+}
+
+// ── Feedback ──
+function showFB(ok,explain){
+  const fb=document.getElementById('qfeedback');
+  fb.className='feedback show '+(ok?'ok':'ng');
+  fb.style.display='block';
+  document.getElementById('fb-head').textContent=ok?'🎉 정답!':'😥 오답!';
+  document.getElementById('fb-body').innerHTML=explain;
+  document.getElementById('qnext').className='next-btn show';
+}
+
+function updateMastery(ids,ok){
+  ids.forEach(id=>{
+    if(mastery[id]){if(ok)mastery[id].c++;else mastery[id].w++;}
+  });
+  saveMastery();
+}
+
+// ── Next / Result ──
+function nextQ(){
+  qi++;
+  if(qi>=qs.length) showResult();
+  else renderQ();
+}
+
+function showResult(){
+  showScreen('result');
+  const total=qs.length;
+  const score=Math.round(correct/total*100);
+  document.getElementById('r-mode-name').textContent=MODE_NAMES[mode]||mode;
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-ok').textContent=correct;
+  document.getElementById('r-ng').textContent=wrong;
+  document.getElementById('r-streak').textContent=maxStreak;
+
+  let grade='',msg='';
+  if(score===100){grade='🏆 Perfect!';msg='완벽합니다! 조동사 완전 마스터!';}
+  else if(score>=80){grade='🌟 Excellent!';msg='훌륭해요! 틀린 문제만 복습하면 완벽!';}
+  else if(score>=60){grade='👍 Good Job!';msg='잘하고 있어요. 오답 노트를 꼭 확인하세요.';}
+  else if(score>=40){grade='📚 Keep Trying!';msg='조금 더 연습이 필요해요. 정리표를 다시 보고 재도전!';}
+  else{grade='💪 화이팅!';msg='기초부터 차근차근! 정리표 복습 후 다시 도전해요.';}
+
+  document.getElementById('r-grade').textContent=grade;
+  document.getElementById('r-msg').textContent=msg;
+
+  // Mastery chips
+  const mg=document.getElementById('r-mastery');
+  mg.innerHTML='';
+  MODALS.forEach(m=>{
+    const d=mastery[m.id],t=d.c+d.w;
+    let cls='none';
+    if(t>0){const r=d.c/t;cls=r>=0.8&&t>=2?'done':r>=0.5?'mid':'weak';}
+    mg.innerHTML+=`<span class="m-chip ${cls}">${m.w}</span>`;
+  });
+
+  // Review
+  const rl=document.getElementById('r-review');
+  rl.innerHTML='';
+  if(log.filter(l=>!l.ok).length===0){
+    rl.innerHTML='<div style="text-align:center;color:var(--green);font-weight:700;padding:12px">오답이 없습니다! 🎉</div>';
+  } else {
+    log.forEach((l,i)=>{
+      const cls=l.ok?'ok-item':'ng-item';
+      rl.innerHTML+=`<div class="review-item ${cls}">
+        <div class="ri-q">${i+1}. ${l.qtext||''}</div>
+        <div class="ri-a">정답: ${l.answer}</div>
+        <div class="ri-e">${l.explain||''}</div>
+      </div>`;
+    });
+  }
+
+  document.getElementById('qprogress').style.width='100%';
+}
+
+function retryMode(){startMode(mode)}
+function goHome(){showScreen('home');updateHomeStats()}
+function tryGoHome(){if(answered||qi===0||confirm('퀴즈를 그만두고 메인으로 돌아갈까요?'))goHome()}
+
+function updateHomeStats(){
+  let tc=0,tw=0,done=0,seen=0;
+  MODALS.forEach(m=>{
+    const d=mastery[m.id];tc+=d.c;tw+=d.w;
+    const t=d.c+d.w;if(t>0)seen++;
+    if(t>=2&&d.c/t>=0.8)done++;
+  });
+  const tot=tc+tw;
+  document.getElementById('h-total').textContent=tot;
+  document.getElementById('h-rate').textContent=tot?Math.round(tc/tot*100)+'%':'0%';
+  document.getElementById('h-mastered').textContent=done;
+}
+updateHomeStats();
+</script>
+</body>
+</html>
